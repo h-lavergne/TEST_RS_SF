@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="h-100 w-100">
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Welcome!{% endblock %}</title>
@@ -7,28 +7,32 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
               integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
               crossorigin="anonymous">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="../assets/css/app.css">
     {% endblock %}
 </head>
-<body>
+<body class="h-100 w-100">
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="#">Navbar</a>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <a class="navbar-brand" href="{{ app.user ? path('home') : path('index') }}">TEST_RS_SF</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ml-auto">
             {% if app.user %}
-            <li class="nav-item">
-                <a class="nav-link" href="{{ path('logout') }}">Logout</a>
+                <li class="nav-item mr-3">
+                    <span class="nav-link"><i class="fa fa-user mr-2" aria-hidden="true"></i>{{ app.user.firstname }}.{{ app.user.lastname }}</span>
+                </li>
+            <li class="nav-item mr-3">
+                <a class="nav-link" href="{{ path('logout') }}"><i class="fa fa-sign-out mr-2" aria-hidden="true"></i>Logout</a>
             </li>
             {% else %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('login') }}">Login</a>
+                <li class="nav-item mr-3">
+                    <a class="nav-link" href="{{ path('login') }}"><i class="fa fa-sign-in mr-2" aria-hidden="true"></i>Login</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('register') }}">Register</a>
+                <li class="nav-item mr-3">
+                    <a class="nav-link" href="{{ path('register') }}"><i class="fa fa-user-plus mr-2"></i>Register</a>
                 </li>
             {% endif %}
         </ul>

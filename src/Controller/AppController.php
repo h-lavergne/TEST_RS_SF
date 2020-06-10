@@ -5,10 +5,12 @@ namespace App\Controller;
 use App\Entity\Site;
 use App\Form\RegistrationType;
 use App\Form\SiteType;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,12 +24,21 @@ class AppController extends AbstractController
 {
     /**
      * @Route("/home", name="home")
+     * @param PaginatorInterface $paginator
+     * @param Request $request
+     * @return Response
      */
-    public function index()
+    public function index(PaginatorInterface $paginator, Request $request)
     {
         $this->isGranted("IS_AUTHENTICATED_FULLY");
         $em = $this->getDoctrine()->getManager();
-        $sites = $em->getRepository(Site::class)->findAll();
+        $data = $em->getRepository(Site::class)->findAll();
+
+        $sites = $paginator->paginate(
+            $data, // Requête contenant les données à paginer (ici nos articles)
+            $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
+            5 // Nombre de résultats par page
+        );
 
         return $this->render('app/index.html.twig', [
             'sites' => $sites,
@@ -38,7 +49,7 @@ class AppController extends AbstractController
      * @param Request $request
      * @param MailerInterface $mailer
      * @return RedirectResponse|Response
-     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
+     * @throws TransportExceptionInterface
      * @Route("/create", name="create_site")
      */
     public function create(Request $request, MailerInterface $mailer)
@@ -48,7 +59,6 @@ class AppController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $site = new Site();
         $form = $this->createForm(SiteType::class, $site);
-        $status = $request->request->get('status');
 
         $form->handleRequest($request);
 
@@ -78,7 +88,7 @@ class AppController extends AbstractController
      * @param Request $request
      * @param MailerInterface $mailer
      * @return RedirectResponse|Response
-     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
+     * @throws TransportExceptionInterface
      */
     public function edit($id, Request $request, MailerInterface $mailer)
     {
@@ -134,7 +144,7 @@ class AppController extends AbstractController
      * @Route("/email")
      * @param MailerInterface $mailer
      * @return Response
-     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
+     * @throws TransportExceptionInterface
      */
     public function sendEmail(MailerInterface $mailer)
     {
