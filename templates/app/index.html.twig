@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello AppController!{% endblock %}
+
+{% block body %}
+
+    <div class="container-fluid w-75">
+        <h1 class="my-4">Listes des sites</h1>
+
+        <a href="{{ path('create_site') }}" class="btn btn-success float-right mb-3">Ajouter un site</a>
+        <table class="table-striped table">
+            {% if sites|length > 0 %}
+            <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Url</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+
+                {% for site in sites %}
+                    <tr>
+                        <td class="w-25" style="vertical-align: middle">{{ site.name }}</td>
+                        <td class="w-25" style="vertical-align: middle"><a target="_blank" href="{{ site.url }}">{{ site.url }}</a></td>
+                        <td class="w-25 {{ site.status > 300 and site.status < 600 ? 'text-danger' : 'text-success' }}" style="vertical-align: middle">{{ site.status }}</td>
+                        <td class="d-flex w-25">
+                            <a href="{{ path('edit_site', {'id': site.id}) }}" class="btn btn-secondary mr-2">Edit</a>
+                            <form action="{{ path('delete_site', {'id': site.id}) }}" method="post">
+                                <input type="hidden" name="delete"
+                                       value="{{ csrf_token('delete') }}">
+                                <button class="btn btn-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td>Aucun site disponible</td>
+                </tr>
+            {% endif %}
+
+            </tbody>
+
+        </table>
+
+
+    </div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create site!{% endblock %}
+
+{% block body %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('home') }}">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Create site</li>
+        </ol>
+    </nav>
+    <div class="container-fluid w-50 h-100 mt-5">
+        <h1 class="lead display-4 mb-5">Create site</h1>
+        <form action="" method="post">
+            {{  form_start(form) }}
+            {{  form_widget(form) }}
+            <button type="submit" class="btn btn-success">Create !</button>
+            {{  form_end(form) }}
+        </form>
+    </div>
+{% endblock %}
